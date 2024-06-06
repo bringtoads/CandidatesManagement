@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CandidatesManagement.Core\CandidatesManagement.Core.csproj" />
+    <ProjectReference Include="..\CandidatesManagement.Infrastructure\CandidatesManagement.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
