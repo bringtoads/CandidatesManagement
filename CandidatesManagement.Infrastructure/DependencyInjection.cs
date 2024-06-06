@@ -17,11 +17,17 @@ namespace CandidatesManagement.Infrastructure
 
         public static IServiceCollection AddPresistance(this IServiceCollection services)
         {
+            //if production 
+            //services.AddDbContext<CandidatesDbContext>(options =>
+            //      options.UseSqlServer("Connectionstring")
+            //);
+            // else testing
             services.AddDbContext<CandidatesDbContext>(options =>
-                  options.UseSqlServer("Connectionstring")
-            );
-            services.AddScoped<ICandidateRepository, CandidateRepository>();
+            options.UseInMemoryDatabase("CandidatesDb"));
 
+            services.AddMemoryCache();
+            services.AddScoped<ICandidateRepository, CandidateRepository>();
+         
             return services;
         }
     }
