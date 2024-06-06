@@ -1,8 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CandidatesManagement.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CandidatesManagement.Infrastructure.Presistence
 {
-    internal class CandidatesDbContext : DbContext
+    public class CandidatesDbContext : DbContext
     {
+        public CandidatesDbContext(DbContextOptions<CandidatesDbContext> options) : base (options)
+        {
+        }
+
+        public DbSet<Candidate> Candidates { get; set; }
     }
 }
