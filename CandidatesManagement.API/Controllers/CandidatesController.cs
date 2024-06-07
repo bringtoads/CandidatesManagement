@@ -9,7 +9,7 @@ namespace CandidatesManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CandidatesController
+    public class CandidatesController : ControllerBase
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IMemoryCache _cache;
