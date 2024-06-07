@@ -2,16 +2,14 @@
 using CandidatesManagement.Core.Interfaces;
 using CandidatesManagement.Core.Models;
 using Mapster;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace CandidatesManagement.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CandidatesController : ApiController
+    public class CandidatesController
     {
         private readonly ICandidateRepository _candidateRepository;
         private readonly IMemoryCache _cache;
