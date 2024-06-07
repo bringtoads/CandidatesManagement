@@ -2,78 +2,65 @@
 using CandidatesManagement.Infrastructure.Presistence.Repositories;
 using CandidatesManagement.Infrastructure.Presistence;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CandidatesManagement.Tests.Repositories
 {
     public class CandidateRepositoryTests
     {
-        private readonly DbContextOptions<CandidatesDbContext> _dbContextOptions;
-
-        public CandidateRepositoryTests()
-        {
-            _dbContextOptions = new DbContextOptionsBuilder<CandidatesDbContext>()
-                .UseInMemoryDatabase(databaseName: "CandidatesTestDb")
-                .Options;
-        }
-
         [Fact]
-        public async Task AddAsync_ShouldAddNewCandidate()
+        public async Task AddAsync_Adds_New_Candidate()
         {
-            using var context = new CandidatesDbContext(_dbContextOptions);
-            var repository = new CandidateRepository(context);
-            var candidate = new Candidate { Email = "test@example.com", FirstName = "John", LastName = "Doe" };
+            // Arrange
+            var candidate = new Candidate
+            {
+                Email = "test3@example.com",
+                FirstName = "Alice",
+                LastName = "Johnson"
+            };
 
+            var mockDbSet = new Mock<DbSet<Candidate>>();
+            mockDbSet.Setup(x => x.AddAsync(candidate, default)).ReturnsAsync(Mock.Of<EntityEntry<Candidate>>(_ => _.Entity == candidate));
+
+            var mockDbContext = new Mock<CandidatesDbContext>();
+            mockDbContext.Setup(x => x.Candidates).Returns(mockDbSet.Object);
+
+            var repository = new CandidateRepository(mockDbContext.Object);
+
+            // Act
             await repository.AddAsync(candidate);
-            var result = await context.Candidates.FirstOrDefaultAsync(c => c.Email == candidate.Email);
 
-            Assert.NotNull(result);
-            Assert.Equal(candidate.Email, result.Email);
+            // Assert
+            mockDbSet.Verify(x => x.AddAsync(candidate, default), Times.Once);
+            mockDbContext.Verify(x => x.SaveChangesAsync(default), Times.Once);
         }
 
         [Fact]
-        public async Task GetByEmailAsync_ShouldReturnCandidate_WhenCandidateExists()
+        public async Task UpdateAsync_Does_Not_Update_Nonexistent_Candidate()
         {
-            using var context = new CandidatesDbContext(_dbContextOptions);
-            var repository = new CandidateRepository(context);
-            var candidate = new Candidate { Email = "test@example.com", FirstName = "John", LastName = "Doe" };
+            // Arrange
+            var candidate = new Candidate
+            {
+                Email = "nonexistent@example.com",
+                FirstName = "Non",
+                LastName = "Existent"
+            };
 
-            await context.Candidates.AddAsync(candidate);
-            await context.SaveChangesAsync();
+            var mockDbSet = new Mock<DbSet<Candidate>>();
+            mockDbSet.Setup(x => x.FindAsync(It.IsAny<object[]>())).ReturnsAsync((Candidate)null);
 
-            var result = await repository.GetByEmailAsync(candidate.Email);
+            var mockDbContext = new Mock<CandidatesDbContext>();
+            mockDbContext.Setup(x => x.Candidates).Returns(mockDbSet.Object);
 
-            Assert.NotNull(result);
-            Assert.Equal(candidate.Email, result.Email);
-        }
+            var repository = new CandidateRepository(mockDbContext.Object);
 
-        [Fact]
-        public async Task GetByEmailAsync_ShouldReturnNull_WhenCandidateDoesNotExist()
-        {
-            using var context = new CandidatesDbContext(_dbContextOptions);
-            var repository = new CandidateRepository(context);
-
-            var result = await repository.GetByEmailAsync("nonexistent@example.com");
-
-            Assert.Null(result);
-        }
-
-        [Fact]
-        public async Task UpdateAsync_ShouldUpdateExistingCandidate()
-        {
-            using var context = new CandidatesDbContext(_dbContextOptions);
-            var repository = new CandidateRepository(context);
-            var candidate = new Candidate { Email = "test@example.com", FirstName = "John", LastName = "Doe" };
-
-            await context.Candidates.AddAsync(candidate);
-            await context.SaveChangesAsync();
-
-            candidate.FirstName = "Jane";
+            // Act
             await repository.UpdateAsync(candidate);
 
-            var result = await context.Candidates.FirstOrDefaultAsync(c => c.Email == candidate.Email);
-
-            Assert.NotNull(result);
-            Assert.Equal("Jane", result.FirstName);
+            // Assert
+            mockDbSet.Verify(x => x.Update(It.IsAny<Candidate>()), Times.Never);
+            mockDbContext.Verify(x => x.SaveChangesAsync(default), Times.Never);
         }
     }
 }

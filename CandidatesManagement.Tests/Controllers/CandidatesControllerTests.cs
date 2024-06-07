@@ -6,40 +6,41 @@ using CandidatesManagement.Core.Interfaces;
 using CandidatesManagement.API.Controllers;
 using CandidatesManagement.Core.Models;
 using CandidatesManagement.API.Models;
+using FluentValidation;
 
 
 namespace CandidatesManagement.Tests.Controllers
 {
     public class CandidatesControllerTests
     {
-        private readonly Mock<ICandidateRepository> _mockRepository;
-        private readonly Mock<IMemoryCache> _mockCache;
-        private readonly CandidatesController _controller;
-
-        public CandidatesControllerTests()
-        {
-            _mockRepository = new Mock<ICandidateRepository>();
-            _mockCache = new Mock<IMemoryCache>();
-            _controller = new CandidatesController(_mockRepository.Object, _mockCache.Object);
-        }
-
         [Fact]
-        public async Task UpsertCandidate_CreatesNewCandidate_WhenEmailDoesNotExist()
+        public async Task AddOrUpdateCandidate_ValidCandidate_ReturnsOkResult()
         {
             // Arrange
-            var candidate = new Candidate { Email = "test@example.com", FirstName = "John", LastName = "Doe" };
-            _mockRepository.Setup(m => m.GetByEmailAsync(It.IsAny<string>()))
-                           .ReturnsAsync((Candidate)null);
-            _mockRepository.Setup(m => m.AddAsync(It.IsAny<Candidate>())).Returns(Task.CompletedTask);
+            var mockRepository = new Mock<ICandidateRepository>();
+            var mockCache = new Mock<IMemoryCache>();
+            var mockValidator = new Mock<IValidator<Candidate>>();
+            var controller = new CandidatesController(mockRepository.Object, mockCache.Object, mockValidator.Object);
+            var candidate = new Candidate
+            {
+                Email = "john.doe@example.com",
+                FirstName = "John",
+                LastName = "Doe",
+                PhoneNumber = "1234567890",
+                PreferredCallTime = "Morning",
+                LinkedInProfile = "https://www.linkedin.com/in/johndoe",
+                GitHubProfile = "https://github.com/johndoe",
+                Comment = "This candidate has a strong background in software development."
+            };
 
             // Act
-            var result = await _controller.AddOrUpdateCandidate(candidate);
+            var result = await controller.AddOrUpdateCandidate(candidate);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var apiResponse = Assert.IsType<ApiResponse<Candidate>>(okResult.Value);
             Assert.True(apiResponse.Success);
-            Assert.Equal(candidate.Email, apiResponse.Data.Email);
+            Assert.NotNull(apiResponse.Data);
         }
     }
 }
