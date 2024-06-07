@@ -19,7 +19,7 @@ To get started with the Candidates Management API, follow these steps:
 
 ### Endpoints
 
-#### POST /api/candidates/upsert
+#### POST /api/candidates/AddOrUpdateCandidate
 
 Creates or updates a candidate in the system. The endpoint expects the following information in the request body:
 
@@ -50,7 +50,7 @@ The Candidates Management API relies on the following dependencies:
 
 ## Testing
 
-Unit tests are included in the `JobCandidatesApi.Tests` project. These tests cover both the controller and repository functionalities. To run the tests, use the test runner in Visual Studio.
+Unit tests are included in the `CandidatesManagement.Tests` project. These tests cover both the controller and repository functionalities. To run the tests, use the test runner in Visual Studio.
 
 ## Contributing
 
