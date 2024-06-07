@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CandidatesManagement.API", "CandidatesManagement.API.csproj", "{B939FE46-656A-4461-B774-74E279C0B416}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidatesManagement.API", "CandidatesManagement.API.csproj", "{B939FE46-656A-4461-B774-74E279C0B416}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CandidatesManagement.Core", "..\CandidatesManagement.Core\CandidatesManagement.Core.csproj", "{2E9B07FB-6CA1-4499-856C-3F8B25ACF109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidatesManagement.Core", "..\CandidatesManagement.Core\CandidatesManagement.Core.csproj", "{2E9B07FB-6CA1-4499-856C-3F8B25ACF109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CandidatesManagement.Infrastructure", "..\CandidatesManagement.Infrastructure\CandidatesManagement.Infrastructure.csproj", "{EDE500AA-5381-498E-91DE-7C57F4DA6E45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidatesManagement.Infrastructure", "..\CandidatesManagement.Infrastructure\CandidatesManagement.Infrastructure.csproj", "{EDE500AA-5381-498E-91DE-7C57F4DA6E45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CandidatesManagement.Tests", "..\CandidatesManagement.Tests\CandidatesManagement.Tests.csproj", "{455AEA25-FB2A-4F2E-AC73-5114BA5D70EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidatesManagement.Tests", "..\CandidatesManagement.Tests\CandidatesManagement.Tests.csproj", "{455AEA25-FB2A-4F2E-AC73-5114BA5D70EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

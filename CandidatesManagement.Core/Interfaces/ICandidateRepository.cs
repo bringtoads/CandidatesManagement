@@ -5,6 +5,7 @@ namespace CandidatesManagement.Core.Interfaces
     public interface ICandidateRepository
     {
         Task<Candidate> GetByEmailAsync(string email);
-        Task AddOrUpdateAsync(Candidate candidate);
+        Task AddAsync(Candidate candidate);
+        Task UpdateAsync(Candidate candidate);
     }
 }

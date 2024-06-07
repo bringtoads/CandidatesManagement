@@ -1,0 +1,17 @@
+@CandidatesManagement.API_HostAddress = https://localhost:7058
+
+Post {{CandidatesManagement.API_HostAddress}}/api/Candidates/AddOrUpdateCandidate/
+Content-Type: application/json
+
+{
+  "id": 2,
+  "firstName": "test",
+  "lastName": "test",
+  "phoneNumber": "test2",
+  "email": "test@test.com",
+  "preferredCallTime": "8pm",
+  "linkedInProfile": "test",
+  "gitHubProfile": "test",
+  "comment": "test"
+}
+ 
