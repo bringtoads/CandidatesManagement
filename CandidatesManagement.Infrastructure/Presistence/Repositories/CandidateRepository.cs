@@ -1,7 +1,6 @@
 ﻿using CandidatesManagement.Core.Interfaces;
 using CandidatesManagement.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Net.WebSockets;
 
 namespace CandidatesManagement.Infrastructure.Presistence.Repositories
 {
