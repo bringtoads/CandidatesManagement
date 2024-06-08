@@ -16,16 +16,20 @@ namespace CandidatesManagement.API.Controllers
         private readonly ICandidateRepository _candidateRepository;
         private readonly IMemoryCache _cache;
         private readonly IValidator<Candidate> _validator;
+        private readonly Serilog.ILogger _logger;
 
         public CandidatesController(
             ICandidateRepository candidateRepository,
             IMemoryCache cache,
-            IValidator<Candidate> validator)
+            IValidator<Candidate> validator,
+            Serilog.ILogger logger)
         {
             _candidateRepository = candidateRepository;
             _cache = cache;
             _validator = validator;
+            _logger = logger;
         }
+
 
         [HttpPost("AddOrUpdateCandidate")]
         public async Task<IActionResult> AddOrUpdateCandidate([FromBody] Candidate candidate)
@@ -39,21 +43,34 @@ namespace CandidatesManagement.API.Controllers
 
             try
             {
-                var existingCandidate = await _candidateRepository.GetByEmailAsync(candidate.Email);
+                var cacheKey = $"Candidate_{candidate.Email}";
+                Candidate existingCandidate = null;
+
+                if (!_cache.TryGetValue(cacheKey, out existingCandidate))
+                {
+                    existingCandidate = await _candidateRepository.GetByEmailAsync(candidate.Email);
+                }
+
                 if (existingCandidate != null)
                 {
-                    candidate.Id = existingCandidate.Id; // Ensure the ID remains unchanged
+                    candidate.Id = existingCandidate.Id;
                     await _candidateRepository.UpdateAsync(candidate);
+                    _cache.Set(cacheKey, candidate, TimeSpan.FromMinutes(30));
+
                     return Ok(new ApiResponse<Candidate>(true, "Candidate updated successfully", candidate));
                 }
                 else
                 {
                     await _candidateRepository.AddAsync(candidate);
+
+                    _cache.Set(cacheKey, candidate, TimeSpan.FromMinutes(30));
+
                     return Ok(new ApiResponse<Candidate>(true, "Candidate added successfully", candidate));
                 }
             }
             catch (Exception ex)
             {
+                _logger.Error(ex, "Error in {Method}", nameof(AddOrUpdateCandidate));
                 return StatusCode(500, new ApiResponse<string>(false, $"An error occurred: {ex.Message}"));
             }
         }

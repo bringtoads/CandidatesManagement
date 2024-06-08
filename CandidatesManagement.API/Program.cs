@@ -1,31 +1,82 @@
 using CandidatesManagement.API;
 using CandidatesManagement.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+       .MinimumLevel.Debug()
+       .WriteTo.Console()
+       .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+       .CreateLogger();
 
+try
 {
-    // Add services to the container.
-    builder.Services
-        .AddPresentationCore()
-        .AddInfrastrructureCore();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-}
+    Log.Information("Starting web host");
 
-var app = builder.Build();
-{
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    var builder = WebApplication.CreateBuilder(args);
     {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+        builder.Host.UseSerilog((context, services, configuration) => configuration
+       .ReadFrom.Configuration(context.Configuration)
+       .ReadFrom.Services(services)
+       .Enrich.FromLogContext());
+
+        // Add services to the container.
+        builder.Services
+            .AddPresentationCore()
+            .AddInfrastrructureCore();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
     }
 
-    app.UseHttpsRedirection();
+    var app = builder.Build();
+    {
+        app.UseSerilogRequestLogging(configure =>
+        {
+            configure.MessageTemplate = "HTTP {RequestMethod} {RequestPath} ({UserId}) responded {StatusCode} in {Elapsed:0.0000}ms";
+        });
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
 
-    app.UseAuthorization();
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async context =>
+                {
+                    var pd = new ProblemDetails
+                    {
+                        Type = "https://demo.api.com/errors/internal-server-error",
+                        Title = "An unrecoverable error occurred",
+                        Status = StatusCodes.Status500InternalServerError,
+                        Detail = "This is a demo error used to demonstrate problem details",
+                    };
+                    pd.Extensions.Add("RequestId", context.TraceIdentifier);
+                    await context.Response.WriteAsJsonAsync(
+                        pd,
+                        pd.GetType(),
+                        options: null, 
+                        contentType: "application/problem+json"
+                    );
+                });
+            });
+        }
+ 
 
-    app.MapControllers();
+        app.Run();
+    }
 
-    app.Run();
 }
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+    return 1;
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+return 0;
