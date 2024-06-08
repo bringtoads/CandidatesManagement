@@ -7,6 +7,8 @@ namespace CandidatesManagement.API
     {
         public static IServiceCollection AddPresentationCore(this IServiceCollection services)
         {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
             services.AddControllers();
             services.AddValidationServices();
 

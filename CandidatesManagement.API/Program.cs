@@ -24,8 +24,7 @@ try
         builder.Services
             .AddPresentationCore()
             .AddInfrastrructureCore();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+      
     }
 
     var app = builder.Build();
