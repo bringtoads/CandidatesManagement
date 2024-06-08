@@ -20,5 +20,14 @@ namespace CandidatesManagement.API
             services.AddValidatorsFromAssemblyContaining<CandidateValidator>();
             return services;
         }
+
+        public static IApplicationBuilder UsePresentationCore(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+            return app;
+        }
     }
 }

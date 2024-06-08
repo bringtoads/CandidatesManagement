@@ -20,7 +20,8 @@ namespace CandidatesManagement.Tests.Controllers
             var mockRepository = new Mock<ICandidateRepository>();
             var mockCache = new Mock<IMemoryCache>();
             var mockValidator = new Mock<IValidator<Candidate>>();
-            var controller = new CandidatesController(mockRepository.Object, mockCache.Object, mockValidator.Object);
+            var mockLogger = new Mock<Serilog.ILogger>();
+            var controller = new CandidatesController(mockRepository.Object, mockCache.Object, mockValidator.Object,mockLogger.Object);
             var candidate = new Candidate
             {
                 Email = "john.doe@example.com",

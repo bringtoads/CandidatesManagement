@@ -24,7 +24,6 @@ try
         builder.Services
             .AddPresentationCore()
             .AddInfrastrructureCore();
-      
     }
 
     var app = builder.Build();
@@ -33,12 +32,9 @@ try
         {
             configure.MessageTemplate = "HTTP {RequestMethod} {RequestPath} ({UserId}) responded {StatusCode} in {Elapsed:0.0000}ms";
         });
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.UseHttpsRedirection();
-        app.UseAuthorization();
-        app.MapControllers();
 
+        app.UsePresentationCore();
+        app.MapControllers();
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler(errorApp =>

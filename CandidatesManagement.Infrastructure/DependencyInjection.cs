@@ -30,5 +30,6 @@ namespace CandidatesManagement.Infrastructure
          
             return services;
         }
+
     }
 }
