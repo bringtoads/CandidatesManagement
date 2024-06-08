@@ -30,7 +30,6 @@ namespace CandidatesManagement.API.Controllers
             _logger = logger;
         }
 
-
         [HttpPost("AddOrUpdateCandidate")]
         public async Task<IActionResult> AddOrUpdateCandidate([FromBody] Candidate candidate)
         {
