@@ -30,6 +30,7 @@
   <ItemGroup>
     <Folder Include="Common\Errors\" />
     <Folder Include="Common\Mapping\" />
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>
