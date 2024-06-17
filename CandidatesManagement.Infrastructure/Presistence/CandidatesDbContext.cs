@@ -10,5 +10,11 @@ namespace CandidatesManagement.Infrastructure.Presistence
         }
 
         public DbSet<Candidate> Candidates { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Candidate>()
+                .Property(c => c.Id)
+                .ValueGeneratedOnAdd();  // Configure the Id property to be an identity column
+        }
     }
 }

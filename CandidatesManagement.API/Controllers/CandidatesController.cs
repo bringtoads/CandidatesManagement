@@ -1,4 +1,5 @@
 ﻿using CandidatesManagement.API.Models;
+using CandidatesManagement.API.Models.Candidate;
 using CandidatesManagement.Core.Interfaces;
 using CandidatesManagement.Core.Models;
 using FluentValidation;
@@ -31,8 +32,19 @@ namespace CandidatesManagement.API.Controllers
         }
 
         [HttpPost("AddOrUpdateCandidate")]
-        public async Task<IActionResult> AddOrUpdateCandidate([FromBody] Candidate candidate)
+        public async Task<IActionResult> AddOrUpdateCandidate([FromBody] CandidateRequest candidateRequest)
         {
+            var candidate = new Candidate
+            {
+                FirstName = candidateRequest.FirstName,
+                LastName = candidateRequest.LastName,
+                PhoneNumber = candidateRequest.PhoneNumber,
+                Email = candidateRequest.Email,
+                PreferredCallTime = candidateRequest.PreferredCallTime,
+                LinkedInProfile = candidateRequest.LinkedInProfile,
+                GitHubProfile = candidateRequest.GitHubProfile,
+                Comment = candidateRequest.Comment,
+            };
             ValidationResult result = await _validator.ValidateAsync(candidate);
             if (!result.IsValid)
             {
