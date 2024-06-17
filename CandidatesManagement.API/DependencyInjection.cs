@@ -1,4 +1,5 @@
-﻿using CandidatesManagement.Core.Validators;
+﻿using CandidatesManagement.API.Mappings;
+using CandidatesManagement.Core.Validators;
 using FluentValidation;
 
 namespace CandidatesManagement.API
@@ -10,6 +11,7 @@ namespace CandidatesManagement.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddControllers();
+            services.AddMappingsCore();
             services.AddValidationServices();
 
             return services;
@@ -18,6 +20,7 @@ namespace CandidatesManagement.API
         public static IServiceCollection AddValidationServices(this IServiceCollection services)
         {
             services.AddValidatorsFromAssemblyContaining<CandidateValidator>();
+
             return services;
         }
 
@@ -27,6 +30,7 @@ namespace CandidatesManagement.API
             app.UseSwaggerUI();
             app.UseHttpsRedirection();
             app.UseAuthorization();
+
             return app;
         }
     }

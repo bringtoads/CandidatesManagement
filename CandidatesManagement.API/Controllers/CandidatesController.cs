@@ -5,6 +5,7 @@ using CandidatesManagement.Core.Models;
 using FluentValidation;
 using FluentValidation.Results;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -18,33 +19,26 @@ namespace CandidatesManagement.API.Controllers
         private readonly IMemoryCache _cache;
         private readonly IValidator<Candidate> _validator;
         private readonly Serilog.ILogger _logger;
+        private readonly IMapper _mapper;
 
         public CandidatesController(
             ICandidateRepository candidateRepository,
             IMemoryCache cache,
             IValidator<Candidate> validator,
-            Serilog.ILogger logger)
+            Serilog.ILogger logger,
+            IMapper mapper)
         {
             _candidateRepository = candidateRepository;
             _cache = cache;
             _validator = validator;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpPost("AddOrUpdateCandidate")]
         public async Task<IActionResult> AddOrUpdateCandidate([FromBody] CandidateRequest candidateRequest)
         {
-            var candidate = new Candidate
-            {
-                FirstName = candidateRequest.FirstName,
-                LastName = candidateRequest.LastName,
-                PhoneNumber = candidateRequest.PhoneNumber,
-                Email = candidateRequest.Email,
-                PreferredCallTime = candidateRequest.PreferredCallTime,
-                LinkedInProfile = candidateRequest.LinkedInProfile,
-                GitHubProfile = candidateRequest.GitHubProfile,
-                Comment = candidateRequest.Comment,
-            };
+            var candidate = _mapper.Map<Candidate>(candidateRequest);
             ValidationResult result = await _validator.ValidateAsync(candidate);
             if (!result.IsValid)
             {
