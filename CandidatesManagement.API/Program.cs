@@ -23,7 +23,7 @@ try
         // Add services to the container.
         builder.Services
             .AddPresentationCore()
-            .AddInfrastrructureCore();
+            .AddInfrastrructureCore(builder.Configuration);
     }
 
     var app = builder.Build();
